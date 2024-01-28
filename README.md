@@ -40,4 +40,4 @@ python client.py/server.py
 ##### So this is the procedure to run the Lab 02.
 
 
-## Note: Always  run the server file first then run the client file so that there is server for the client to connect.
+## Note: Always  run the server code first then run the client code so that there is server for the client to connect.
