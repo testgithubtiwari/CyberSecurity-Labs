@@ -1,11 +1,7 @@
 import socket
 import sys
-
-server_busy_message = "Server busy now. Try again later!"
-server_busy = False
-
-class ServerBusyError(Exception):
-    pass
+import signal
+import multiprocessing
 
 def handle_client_connection(client_socket):
     while True:
@@ -15,34 +11,29 @@ def handle_client_connection(client_socket):
                 break
             result = eval(data.decode())
             client_socket.send(str(result).encode())
-        except ServerBusyError:
-            client_socket.send("ServerBusyError".encode())
-            client_socket.close()
-            break
         except Exception as e:
             print("Error:", e)
             break
     client_socket.close()
 
+def handle_client(client_socket, client_address):
+    print(f"Connection from {client_address}")
+    handle_client_connection(client_socket)
+
 def main():
-    global server_busy
-    port = input("Enter the port: ")
-    localhost=input("Enter the server ip address: ")
+    port = int(input("Enter the port: "))
+    localhost_server=input("Enter the server ip address: ")
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((localhost, int(port)))
-    server_socket.listen(1)
+    server_socket.bind((localhost_server, port))
+    server_socket.listen(10)
     print(f"Server listening on port {port}")
 
     while True:
         try:
             client_socket, client_address = server_socket.accept()
-            print(f"Connection from {client_address}")
-            if server_busy:
-                raise ServerBusyError
-            else:
-                server_busy = True
-                handle_client_connection(client_socket)
-                server_busy = False
+            process = multiprocessing.Process(target=handle_client, args=(client_socket, client_address))
+            process.start()
+            client_socket.close()
 
         except KeyboardInterrupt:
             print("Server terminated.")
@@ -50,7 +41,6 @@ def main():
         except Exception as e:
             print("Error:", e)
             break
-
     server_socket.close()
 
 if __name__ == "__main__":

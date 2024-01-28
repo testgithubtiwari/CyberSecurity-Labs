@@ -2,19 +2,13 @@ import socket
 import sys
 
 def main():
-
-    port_server = input("Enter the port: ")
-    localhost_server=input("Enter the server ip address: ")
+    server_ip = input("Enter the server ip address: ")
+    server_port = input("Enter the port: ")
 
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((localhost_server, int(port_server)))
-    except ConnectionRefusedError:
-        print("Server is busy. Please try again later.")
-        return
-
-    print("Connected to server.")
-    try:
+        client_socket.connect((server_ip,int(server_port)))
+        print("Connected to server.")
         while True:
             expression = input("Enter arithmetic expression: ")
             client_socket.send(expression.encode())
