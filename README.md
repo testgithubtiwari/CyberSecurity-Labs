@@ -40,4 +40,25 @@ python client.py/server.py
 ##### So this is the procedure to run the Lab 02.
 
 
+
+## Third Lab
+##### Completed on 31-01-2024.
+###### To run the third lab please follow the underlined guidelines below. 
+###### Go to the project root directory i.e. cybersecurity.
+```bash
+cd lab03
+```
+###### let's say you want to run the first code
+```bash
+cd q8
+```
+
+```bash
+python client.py/server.py
+```
+
+
+##### So this is the procedure to run the Lab 03.
+
+
 ## Note: Always  run the server code first then run the client code so that there is server for the client to connect.
