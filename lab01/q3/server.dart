@@ -1,22 +1,29 @@
 import 'dart:io';
-import 'dart:convert';
 
 void startServer() async {
-  ServerSocket serverSocket = await ServerSocket.bind('127.0.0.1', 12346);
-  print('Server listening on 127.0.0.1:12346');
+  ServerSocket? serverSocket;
+  String host = '127.0.0.1';
+  int port = 12346;
 
-  await for (Socket clientSocket in serverSocket) {
-    print(
-        'Connection from ${clientSocket.remoteAddress}:${clientSocket.remotePort}');
-
-    List<int> data = await clientSocket.first;
-    String clientMessage = utf8.decode(data);
-
-    clientSocket.write(clientMessage);
-
-    // Close the connection
-    clientSocket.close();
-    serverSocket.close();
+  try {
+    serverSocket = await ServerSocket.bind(host, port);
+    print('Server listening on $host:$port');
+    await for (Socket clientSocket in serverSocket) {
+      print(
+          'Connection from ${clientSocket.remoteAddress}:${clientSocket.remotePort}');
+      
+      // Simulate abnormal behavior: Send a large amount of data to the client
+      for (int i = 0; i < 1000; i++) {
+        clientSocket.write('Abnormal data $i\n');
+      }
+      
+      // Close the connection after sending abnormal data
+      clientSocket.close();
+    }
+  } catch (e) {
+    print('Error: $e');
+  } finally {
+    serverSocket?.close();
   }
 }
 

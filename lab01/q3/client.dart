@@ -1,28 +1,22 @@
 import 'dart:io';
 
 void startClient() async {
-  Socket clientSocket = await Socket.connect('127.0.0.1', 12346);
-  print('Connected to 127.0.0.1:12346');
+  Socket? socket;
+  String host = '127.0.0.1';
+  int port = 12346;
 
-  stdout.write('Enter the message from client to server: ');
-  String clientMessage = stdin.readLineSync()!;
-
-  clientSocket.write(clientMessage);
-
-  clientSocket.listen(
-    (List<int> event) {
-      String responseMessage = String.fromCharCodes(event);
-      print('Server response: $responseMessage');
-    },
-    onDone: () {
-      print('Connection closed');
-      clientSocket.destroy();
-    },
-    onError: (error) {
-      print('Error: $error');
-      clientSocket.destroy();
-    },
-  );
+  try {
+    socket = await Socket.connect(host, port);
+    print('Connected to $host:$port');
+    
+    // Simulate abnormal behavior: Send unexpected or malicious data to the server
+    socket.write('Abnormal data\n');
+    
+  } catch (e) {
+    print('Error: $e');
+  } finally {
+    socket?.close();
+  }
 }
 
 void main() {
